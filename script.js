@@ -48,6 +48,7 @@ function move() {
   }
   if (Object.values(test.getGameState()).includes(6)) {
     console.log("Você perdeu");
+    updatedGameboard = JSON.parse(JSON.stringify(gameboard));
   }
 }
   return {playerMove, getGameState};
