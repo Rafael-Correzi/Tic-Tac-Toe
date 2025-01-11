@@ -7,8 +7,8 @@ function move() {
     if (gameboard[`row${row}`][column - 1] === -3) {
       gameboard[`row${row}`][column - 1] = 1 
       computerMove();
+      evaluate();
       return (`${gameboard['row1']}\n${gameboard['row2']}\n${gameboard['row3']}`);
-
     }
     else {
       return ("Movimento inválido");
@@ -26,34 +26,32 @@ function move() {
     return (`${gameboard['row1']}\n${gameboard['row2']}\n${gameboard['row3']}`);
   }
 }
+function row1() {
+  return (gameboard["row1"][0]) + (gameboard["row1"][1]) + (gameboard["row1"][2]);
+}
 
+function getGameState() {
+  const row1Sum = (gameboard["row1"][0]) + (gameboard["row1"][1]) + (gameboard["row1"][2]);
+  const row2Sum = gameboard["row2"][0] + gameboard["row2"][1] + gameboard["row2"][2];
+  const row3Sum = gameboard["row3"][0] + gameboard["row3"][1] + gameboard["row3"][2];
+  const column1Sum = gameboard["row1"][0] + gameboard["row2"][0] + gameboard["row3"][0];
+  const column2Sum = gameboard["row1"][1] + gameboard["row2"][1] + gameboard["row3"][1];
+  const column3Sum = gameboard["row1"][2] + gameboard["row2"][2] + gameboard["row3"][2];
+  const diagonal1Sum = gameboard["row1"][0] + gameboard["row2"][1] + gameboard["row3"][2];
+  const diagonal2Sum = gameboard["row1"][2] + gameboard["row2"][1] + gameboard["row3"][0];
+
+  return {row1Sum, row2Sum, row3Sum, column1Sum, column2Sum, column3Sum, diagonal1Sum, diagonal2Sum};
+}
+
+const test = move();
 function evaluate() {
-  function row1() {
-    return gameboard["row1"[0]] + gameboard["row1"[1]] + gameboard["row1"[2]];
+  console.log(getGameState());
+  if (Object.values(getGameState()).includes(3)) {
+    console.log("Você ganhou!");
   }
-  function row2() {
-    return gameboard["row2"[0]] + gameboard["row2"[1]] + gameboard["row2"[2]];
+  if (Object.values(getGameState()).includes(6)) {
+    console.log("Você perdeu");
   }
-  function row3() {
-    return gameboard["row3"[0]] + gameboard["row3"[1]] + gameboard["row3"[2]];
-  }
-  function column1() {
-    return gameboard["row1"][0] + gameboard["row2"][0] + gameboard["row3"][0];
-  }
-  function column2() {
-    return gameboard["row1"][1] + gameboard["row2"][1] + gameboard["row3"][1];
-  }
-  function column3() {
-    return gameboard["row1"][2] + gameboard["row2"][2] + gameboard["row3"][2];
-  }
-  function diagonal1() {
-    return gameboard["row1"][0] + gameboard["row2"][1] + gameboard["row3"][2];
-  }
-  function diagonal2() {
-    return gameboard["row1"][2] + gameboard["row2"][1] + gameboard["row3"][0];
-  }
-  return {row1, row2, row3, column1, column2, column3, diagonal1, diagonal2};
 }
 //todo function evalutate position
 //todo difficulty levels, actual tic tac toe optimal move algorithmss
-const test = move();
