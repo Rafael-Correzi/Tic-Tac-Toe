@@ -10,8 +10,6 @@ function play(mode) {
     if (updatedGameboard[`row${row}`][column - 1] === -3) {
       updatedGameboard[`row${row}`][column - 1] = 1;
       selectMode();
-      evaluate();
-      return `${updatedGameboard["row1"]}\n${updatedGameboard["row2"]}\n${updatedGameboard["row3"]}`;
     } else {
       return "Movimento inválido";
     }
@@ -19,9 +17,11 @@ function play(mode) {
 
   function selectMode() {
     if (mode === "easiest") {
+      test.evaluate();
       computerMoveEasiest();
     }
     if (mode === "impossible") {
+      test2.evaluate();
       if (moveCount === 0) {
         go().moveOne();
       }
@@ -38,12 +38,26 @@ function play(mode) {
       let cColumn = Math.floor(Math.random() * 4);
       if ((updatedGameboard[`row${cRow}`][cColumn]) === -3) {
         updatedGameboard[`row${cRow}`][cColumn] = 2;
+        evaluate();
       } 
       else {
         computerMoveEasiest();
       }
     }
-
+    function randomP() {
+      let cRow = Math.floor(Math.random() * 3 + 1);
+      let cColumn = Math.floor(Math.random() * 4);
+      if ((updatedGameboard[`row${cRow}`][cColumn]) === -3) {
+        updatedGameboard[`row${cRow}`][cColumn] = 1;
+        selectMode();
+        evaluate();
+  
+      } 
+      else {
+        randomP();
+      }
+      
+    }
 
 
 
@@ -309,6 +323,10 @@ function play(mode) {
         updatedGameboard["row1"][2] +
         updatedGameboard["row2"][1] +
         updatedGameboard["row3"][0];
+      let total = 
+        row1Sum + 
+        row2Sum + 
+        row3Sum;
 
       return {
         row1Sum,
@@ -319,26 +337,44 @@ function play(mode) {
         column3Sum,
         diagonal1Sum,
         diagonal2Sum,
+        total
       };
     } 
 
     function evaluate() {
-      console.log(test2.getGameState());
-      if (Object.values(test2.getGameState()).includes(3)) {
+      let wins = 0;
+      let losses = 0;
+      let draws = 0;
+      let quit;
+      console.log(`${updatedGameboard["row1"]}\n${updatedGameboard["row2"]}\n${updatedGameboard["row3"]}`);
+      if (Object.values(getGameState()).includes(3)) {
+        console.log(`${updatedGameboard["row1"]}\n${updatedGameboard["row2"]}\n${updatedGameboard["row3"]}`);
         console.log("Você ganhou!");
-        updatedGameboard = JSON.parse(JSON.stringify(gameboard));
+        this.updatedGameboard = null;
+        this.updatedGameboard = JSON.parse(JSON.stringify(gameboard));
+        wins++
+        moveCount = 0;
       }
-      if (Object.values(test2.getGameState()).includes(6)) {
+      if (Object.values(getGameState()).includes(6)) {
+        console.log(`${updatedGameboard["row1"]}\n${updatedGameboard["row2"]}\n${updatedGameboard["row3"]}`);
         console.log("Você perdeu");
-        updatedGameboard = JSON.parse(JSON.stringify(gameboard));
+        this.updatedGameboard = null;
+        this.updatedGameboard = JSON.parse(JSON.stringify(gameboard));
+        losses++
+        moveCount = 0;
       }
-        if (!Object.values(test2.getGameState()).includes(-3)) {
+      else if (getGameState().total === 13 || getGameState().total === 14) {
+        console.log(`${updatedGameboard["row1"]}\n${updatedGameboard["row2"]}\n${updatedGameboard["row3"]}`);
         console.log("Empate");
-        updatedGameboard = JSON.parse(JSON.stringify(gameboard));
+        this.updatedGameboard = null;
+        this.updatedGameboard = JSON.parse(JSON.stringify(gameboard));
+        draws++
+        moveCount = 0;
       }
+      return {wins, losses, draws, quit};
     }
 
-    return { playerMove, getGameState, computerMoveEasiest };
+    return { playerMove, getGameState, computerMoveEasiest, randomP, evaluate, updatedGameboard};
 }
 
   /* row1[0] row1[1] row1[2]
@@ -369,12 +405,13 @@ function play(mode) {
   
   */
 
-
   const test = play("easiest");
   const test2 = play("impossible");
   console.log(test2.playerMove(2,1));
   console.log(test2.playerMove(1,1));
   console.log(test2.playerMove(1,3));
   console.log(test2.playerMove(3,2));
+  console.log(test2.playerMove(2,3));
+  console.log(test2.playerMove(3,3));
 //todo function evalutate position
 //todo difficulty levels, actual tic tac toe optimal move algorithmss
