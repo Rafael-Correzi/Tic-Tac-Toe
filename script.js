@@ -4,8 +4,10 @@ const gameboard = (() => {
 
 function play(mode) {
   let updatedGameboard = JSON.parse(JSON.stringify(gameboard));
-
   let moveCount = 0;
+  let wins = 0;
+  let losses = 0;
+  let draws = 0;
   function playerMove(row, column) {
     if (updatedGameboard[`row${row}`][column - 1] === -3) {
       updatedGameboard[`row${row}`][column - 1] = 1;
@@ -17,19 +19,26 @@ function play(mode) {
 
   function selectMode() {
     if (mode === "easiest") {
-      test.evaluate();
-      computerMoveEasiest();
+      evaluate()
+      computerMoveEasiest(); 
     }
     if (mode === "impossible") {
-      test2.evaluate();
+      evaluate();
+      if (moveCount === -1) {
+        moveCount++;
+        return;
+      }
       if (moveCount === 0) {
         go().moveOne();
+        return;
       }
-      else if (moveCount === 1) {
+      if (moveCount === 1) {
         go().moveTwo();
+        return;
       }
       else if (moveCount >= 2) {
         go().moveAfter();
+        return;
       }
     }
   }
@@ -50,8 +59,6 @@ function play(mode) {
       if ((updatedGameboard[`row${cRow}`][cColumn]) === -3) {
         updatedGameboard[`row${cRow}`][cColumn] = 1;
         selectMode();
-        evaluate();
-  
       } 
       else {
         randomP();
@@ -61,17 +68,16 @@ function play(mode) {
 
 
 
-    const go = function computerMoveImpossible() {
-
-  const cornerTL = updatedGameboard["row1"][0];
-  const cornerTR = updatedGameboard["row1"][2];
-  const cornerBR = updatedGameboard["row3"][2];
-  const cornerBL = updatedGameboard["row3"][0];
-  const edgeT = updatedGameboard["row1"][1];
-  const edgeR = updatedGameboard["row2"][2];
-  const edgeB = updatedGameboard["row3"][1];
-  const edgeL = updatedGameboard["row2"][0];
-  const center = updatedGameboard["row2"][1];
+    const go = function computerMoveImpossible(mode) {
+      const cornerTL = updatedGameboard["row1"][0];
+      const cornerTR = updatedGameboard["row1"][2];
+      const cornerBR = updatedGameboard["row3"][2];
+      const cornerBL = updatedGameboard["row3"][0];
+      const edgeT = updatedGameboard["row1"][1];
+      const edgeR = updatedGameboard["row2"][2];
+      const edgeB = updatedGameboard["row3"][1];
+      const edgeL = updatedGameboard["row2"][0];
+      const center = updatedGameboard["row2"][1];
       const moveOne = function firstCMove() {
         if (center === 1) {
           updatedGameboard["row1"][0] = 2;
@@ -106,7 +112,7 @@ function play(mode) {
             (center === 1 && edgeB === 1)):
             updatedGameboard["row1"][1] = 2;
             break;
-          case ((cornerBL && cornerBR === 1) || (center === 1 && edgeT === 1)):
+          case ((cornerBL === 1 && cornerBR === 1) || (center === 1 && edgeT === 1)):
             updatedGameboard["row3"][1] = 2;
             break;
           case ((cornerTL === 1 && edgeT === 1) || (cornerBR === 1 && edgeR === 1) ||
@@ -131,11 +137,11 @@ function play(mode) {
             updatedGameboard["row2"][2] = 2;
             break;
         }
-        moveCount++
+        moveCount++;
         evaluate();
       }
 
-      const moveAfter = function subsequentMoves() {
+      const moveAfter = function subsequentMoves(mode) {
         switch (true) {
           case getGameState().row1Sum === 1:
             for (i = 0; i < 3; i++) {
@@ -280,7 +286,7 @@ function play(mode) {
             }
             break;
           default :
-            test2.computerMoveEasiest();
+            computerMoveEasiest();
         }
         moveCount++
         evaluate();
@@ -290,7 +296,7 @@ function play(mode) {
     }
       
 
-    function getGameState() {
+    function getGameState(mode) {
       let row1Sum =
         updatedGameboard["row1"][0] +
         updatedGameboard["row1"][1] +
@@ -342,39 +348,35 @@ function play(mode) {
     } 
 
     function evaluate() {
-      let wins = 0;
-      let losses = 0;
-      let draws = 0;
-      let quit;
       console.log(`${updatedGameboard["row1"]}\n${updatedGameboard["row2"]}\n${updatedGameboard["row3"]}`);
       if (Object.values(getGameState()).includes(3)) {
         console.log(`${updatedGameboard["row1"]}\n${updatedGameboard["row2"]}\n${updatedGameboard["row3"]}`);
         console.log("Você ganhou!");
-        this.updatedGameboard = null;
-        this.updatedGameboard = JSON.parse(JSON.stringify(gameboard));
         wins++
-        moveCount = 0;
+        moveCount = -1;
+        updatedGameboard = JSON.parse(JSON.stringify(gameboard));
+        return;
       }
       if (Object.values(getGameState()).includes(6)) {
         console.log(`${updatedGameboard["row1"]}\n${updatedGameboard["row2"]}\n${updatedGameboard["row3"]}`);
         console.log("Você perdeu");
-        this.updatedGameboard = null;
-        this.updatedGameboard = JSON.parse(JSON.stringify(gameboard));
         losses++
-        moveCount = 0;
+        moveCount = -1;
+        updatedGameboard = JSON.parse(JSON.stringify(gameboard));
+        return;
       }
       else if (getGameState().total === 13 || getGameState().total === 14) {
         console.log(`${updatedGameboard["row1"]}\n${updatedGameboard["row2"]}\n${updatedGameboard["row3"]}`);
         console.log("Empate");
-        this.updatedGameboard = null;
-        this.updatedGameboard = JSON.parse(JSON.stringify(gameboard));
+        updatedGameboard = JSON.parse(JSON.stringify(gameboard));
         draws++
-        moveCount = 0;
+        moveCount = -1;
+        updatedGameboard = JSON.parse(JSON.stringify(gameboard));
+        return;
       }
-      return {wins, losses, draws, quit};
     }
 
-    return { playerMove, getGameState, computerMoveEasiest, randomP, evaluate, updatedGameboard};
+    return { playerMove, getGameState, computerMoveEasiest, randomP, evaluate, updatedGameboard, go};
 }
 
   /* row1[0] row1[1] row1[2]
@@ -404,14 +406,10 @@ function play(mode) {
   https://en.wikipedia.org/wiki/Tic-tac-toe#Strategy
   
   */
-
-  const test = play("easiest");
-  const test2 = play("impossible");
-  console.log(test2.playerMove(2,1));
-  console.log(test2.playerMove(1,1));
-  console.log(test2.playerMove(1,3));
-  console.log(test2.playerMove(3,2));
-  console.log(test2.playerMove(2,3));
-  console.log(test2.playerMove(3,3));
-//todo function evalutate position
+const test2 = play("impossible");
+test2.randomP();
+test2.randomP();
+test2.randomP();
+test2.randomP();
+//todo function evaluate position
 //todo difficulty levels, actual tic tac toe optimal move algorithmss
