@@ -25,10 +25,10 @@ function play(mode) {
       if (moveCount === 0) {
         go().moveOne();
       }
-      if (moveCount === 1) {
+      else if (moveCount === 1) {
         go().moveTwo();
       }
-      if (moveCount >= 2) {
+      else if (moveCount >= 2) {
         go().moveAfter();
       }
     }
@@ -36,10 +36,12 @@ function play(mode) {
     function computerMoveEasiest() {
       let cRow = Math.floor(Math.random() * 3 + 1);
       let cColumn = Math.floor(Math.random() * 4);
-      if (updatedGameboard[`row${cRow}`][cColumn] === -3) {
+      if ((updatedGameboard[`row${cRow}`][cColumn]) === -3) {
         updatedGameboard[`row${cRow}`][cColumn] = 2;
-      } else computerMoveEasiest();
-      return `${updatedGameboard["row1"]}\n${updatedGameboard["row2"]}\n${updatedGameboard["row3"]}`;
+      } 
+      else {
+        computerMoveEasiest();
+      }
     }
 
 
@@ -58,7 +60,7 @@ function play(mode) {
   const center = updatedGameboard["row2"][1];
       const moveOne = function firstCMove() {
         if (center === 1) {
-          updatedGameboard[cornerTL] = 2;
+          updatedGameboard["row1"][0] = 2;
         }
         else if (
           cornerTL === 1 ||
@@ -84,35 +86,35 @@ function play(mode) {
             (cornerBR === 1 && edgeT === 1) || (cornerTR === 1 && edgeB === 1) ||
             (cornerBL === 1 && edgeT === 1) || (edgeT === 1 && edgeB === 1) ||
             (center === 1 && edgeR === 1)):
-            updatedGameboard[edgeL] = 2;
+            updatedGameboard["row2"][0] = 2;
             break;
           case ((cornerTL === 1 && cornerTR === 1) || (edgeR === 1 && edgeL === 1) ||
             (center === 1 && edgeB === 1)):
-            updatedGameboard[edgeT] = 2;
+            updatedGameboard["row1"][1] = 2;
             break;
           case ((cornerBL && cornerBR === 1) || (center === 1 && edgeT === 1)):
-            updatedGameboard[edgeB] = 2;
+            updatedGameboard["row3"][1] = 2;
             break;
           case ((cornerTL === 1 && edgeT === 1) || (cornerBR === 1 && edgeR === 1) ||
             (cornerTL === 1 && edgeR === 1) || (edgeT === 1 && edgeR === 1) ||
             (center === 1 && cornerBL === 1) || (center === 1 && cornerBR === 1)):
-            updatedGameboard[cornerTR] = 2;
+            updatedGameboard["row1"][2] = 2;
             break;
           case ((cornerTR === 1 && edgeT === 1) || (cornerBL === 1 && edgeL === 1) ||
             (cornerTR === 1 && edgeL === 1) || (edgeT === 1 && edgeL === 1)):
-            updatedGameboard[cornerTL] = 2;
+            updatedGameboard["row1"][0] = 2;
             break;
           case ((cornerBL === 1 && edgeB === 1) || (cornerTR === 1 && edgeR === 1) ||
             (cornerBL === 1 && edgeR === 1) || (edgeR === 1 && edgeB === 1)):
-            updatedGameboard[cornerBR] = 2;
+            updatedGameboard["row3"][2] = 2;
             break;
           case ((cornerBR === 1 && edgeB === 1) || (cornerTL === 1 && edgeL === 1) ||
             (cornerBR === 1 && edgeL === 1) || (edgeB === 1 && edgeL === 1) ||
             (center === 1 && cornerTR === 1)):
-            updatedGameboard[cornerBL] = 2;
+            updatedGameboard["row3"][0] = 2;
             break;
           case ((cornerTR === 1 && cornerBR === 1) || (center === 1 || edgeL === 1)):
-            updatedGameboard[edgeR] = 2;
+            updatedGameboard["row2"][2] = 2;
             break;
         }
         moveCount++
@@ -263,6 +265,8 @@ function play(mode) {
               cornerBR === 2;
             }
             break;
+          default :
+            test2.computerMoveEasiest();
         }
         moveCount++
         evaluate();
@@ -273,35 +277,35 @@ function play(mode) {
       
 
     function getGameState() {
-      const row1Sum =
+      let row1Sum =
         updatedGameboard["row1"][0] +
         updatedGameboard["row1"][1] +
         updatedGameboard["row1"][2];
-      const row2Sum =
+      let row2Sum =
         updatedGameboard["row2"][0] +
         updatedGameboard["row2"][1] +
         updatedGameboard["row2"][2];
-      const row3Sum =
+      let row3Sum =
         updatedGameboard["row3"][0] +
         updatedGameboard["row3"][1] +
         updatedGameboard["row3"][2];
-      const column1Sum =
+      let column1Sum =
         updatedGameboard["row1"][0] +
         updatedGameboard["row2"][0] +
         updatedGameboard["row3"][0];
-      const column2Sum =
+      let column2Sum =
         updatedGameboard["row1"][1] +
         updatedGameboard["row2"][1] +
         updatedGameboard["row3"][1];
-      const column3Sum =
+      let column3Sum =
         updatedGameboard["row1"][2] +
         updatedGameboard["row2"][2] +
         updatedGameboard["row3"][2];
-      const diagonal1Sum =
+      let diagonal1Sum =
         updatedGameboard["row1"][0] +
         updatedGameboard["row2"][1] +
         updatedGameboard["row3"][2];
-      const diagonal2Sum =
+      let diagonal2Sum =
         updatedGameboard["row1"][2] +
         updatedGameboard["row2"][1] +
         updatedGameboard["row3"][0];
@@ -319,18 +323,22 @@ function play(mode) {
     } 
 
     function evaluate() {
-      console.log(test.getGameState());
-      if (Object.values(test.getGameState()).includes(3)) {
+      console.log(test2.getGameState());
+      if (Object.values(test2.getGameState()).includes(3)) {
         console.log("Você ganhou!");
         updatedGameboard = JSON.parse(JSON.stringify(gameboard));
       }
-      if (Object.values(test.getGameState()).includes(6)) {
+      if (Object.values(test2.getGameState()).includes(6)) {
         console.log("Você perdeu");
+        updatedGameboard = JSON.parse(JSON.stringify(gameboard));
+      }
+        if (!Object.values(test2.getGameState()).includes(-3)) {
+        console.log("Empate");
         updatedGameboard = JSON.parse(JSON.stringify(gameboard));
       }
     }
 
-    return { playerMove, getGameState };
+    return { playerMove, getGameState, computerMoveEasiest };
 }
 
   /* row1[0] row1[1] row1[2]
@@ -364,6 +372,9 @@ function play(mode) {
 
   const test = play("easiest");
   const test2 = play("impossible");
-  console.log(test2.playerMove(2,1))
+  console.log(test2.playerMove(2,1));
+  console.log(test2.playerMove(1,1));
+  console.log(test2.playerMove(1,3));
+  console.log(test2.playerMove(3,2));
 //todo function evalutate position
 //todo difficulty levels, actual tic tac toe optimal move algorithmss
