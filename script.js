@@ -12,6 +12,7 @@ function play(mode) {
     if (updatedGameboard[`row${row}`][column - 1] === -3) {
       updatedGameboard[`row${row}`][column - 1] = 1;
       selectMode();
+      return moveCount;
     } else {
       return "Movimento inválido";
     }
@@ -81,6 +82,12 @@ function play(mode) {
       const edgeB = updatedGameboard["row3"][1];
       const edgeL = updatedGameboard["row2"][0];
       const center = updatedGameboard["row2"][1];
+
+      const computerStart = function computerMovesFirst() {
+        updatedGameboard["row3"][2] = 2;
+        evaluate();
+        return moveCount;
+      }
       const moveOne = function firstCMove() {
         if (center === 1) {
           updatedGameboard["row1"][0] = 2;
@@ -278,7 +285,7 @@ function play(mode) {
         evaluate();
        
       }
-       return { moveOne, moveTwo, moveAfter };
+       return { computerStart, moveOne, moveTwo, moveAfter };
     }
       
 
@@ -358,7 +365,7 @@ function play(mode) {
       }
     }
 
-    return { playerMove, getGameState, computerMoveEasiest, randomP, evaluate, updatedGameboard, go};
+    return { playerMove, getGameState, computerMoveEasiest, randomP, evaluate, updatedGameboard, go };
 }
 
   /* row1[0] row1[1] row1[2]
@@ -390,7 +397,6 @@ function play(mode) {
   */
 const test2 = play("impossible");
 
-  test2.randomP();
 
 
 //todo function evaluate position
