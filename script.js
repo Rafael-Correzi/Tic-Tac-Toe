@@ -30,14 +30,17 @@ function play(mode) {
       }
       if (moveCount === 0) {
         go().moveOne();
+        moveCount++;
         return;
       }
       if (moveCount === 1) {
         go().moveTwo();
+        moveCount++;
         return;
       }
-      else if (moveCount >= 2) {
+      if (moveCount >= 2) {
         go().moveAfter();
+        moveCount++;
         return;
       }
     }
@@ -94,7 +97,6 @@ function play(mode) {
         ) {
           updatedGameboard["row2"][1] = 2;
         }
-        moveCount++
         evaluate();
       }
 
@@ -137,158 +139,142 @@ function play(mode) {
             updatedGameboard["row2"][2] = 2;
             break;
         }
-        moveCount++;
         evaluate();
       }
 
-      const moveAfter = function subsequentMoves(mode) {
+      const moveAfter = function subsequentMoves() {
         switch (true) {
-          case getGameState().row1Sum === 1:
+          case (getGameState().row1Sum === 1):
             for (i = 0; i < 3; i++) {
               if (updatedGameboard[`row1`][i] === -3) {
                 updatedGameboard[`row1`][i] = 2;
               }
             }
             break;
-          case getGameState().row2Sum === 1:
+          case (getGameState().row2Sum === 1):
             for (i = 0; i < 3; i++) {
               if (updatedGameboard[`row2`][i] === -3) {
                 updatedGameboard[`row2`][i] = 2;
               }
             }
             break;
-          case getGameState().row3Sum === 1:
+          case (getGameState().row3Sum === 1):
             for (i = 0; i < 3; i++) {
               if (updatedGameboard[`row3`][i] === -3) {
                 updatedGameboard[`row3`][i] = 2;
               }
             }
             break;
-          case getGameState().column1Sum === 1:
-            for (i = 0; i < 3; i++) {
+          case (getGameState().column1Sum === 1):
+            for (i = 1; i < 4; i++) {
               if (updatedGameboard[`row${i}`][0] === -3) {
                 updatedGameboard[`row${i}`][0] = 2;
-              }
-            }
-            break;
-          case getGameState().column1Sum === 1:
-            for (i = 1; i < 4; i++) {
-              if (updatedGameboard[`row${i}`][1] === -3) {
-                updatedGameboard[`row${i}`][1] = 2;
               }
             }
             break;
           case ((getGameState().column2Sum === 1)):
             for (i = 1; i < 4; i++) {
+              if (updatedGameboard[`row${i}`][1] === -3) {
+                updatedGameboard[`row${i}`][1] = 2;
+              }
+            }
+            break;
+          case (getGameState().column3Sum === 1):
+            for (i = 1; i < 4; i++) {
               if (updatedGameboard[`row${i}`][2] === -3) {
                 updatedGameboard[`row${i}`][2] = 2;
               }
             }
             break;
-          case getGameState().column3Sum === 1:
-            for (i = 1; i < 4; i++) {
-              if (updatedGameboard[`row${i}`][0] === -3) {
-                updatedGameboard[`row${i}`][i] = 2;
-              }
-            }
-            break;
-          case getGameState().diagonal1Sum === 1:
+          case (getGameState().diagonal1Sum === 1):
             if (cornerTL === -3) {
-              cornerTL = 2;
+              updatedGameboard["row1"][0] = 2;
             }
             else if (center === -3) {
-              center = 2;
+              updatedGameboard["row2"][1] = 2;
             }
             else if (cornerBR === -3) {
-              cornerBR === 2;
+              updatedGameboard["row3"][2] = 2;
             }
             break;
-          case getGameState().diagonal2Sum === 1:
+          case (getGameState().diagonal2Sum === 1):
             if (cornerTR === -3) {
-              cornerTL = 2;
+              updatedGameboard["row1"][2] = 2;
             }
             else if (center === -3) {
-              center = 2;
+              updatedGameboard["row2"][1] = 2;
             }
             else if (cornerBL === -3) {
-              cornerBR === 2;
+              updatedGameboard["row3"][0] = 2;
             }
             break;
-          case getGameState().row1Sum === -1:
+          case (getGameState().row1Sum === -1):
             for (i = 0; i < 3; i++) {
               if (updatedGameboard[`row1`][i] === -3) {
                 updatedGameboard[`row1`][i] = 2;
               }
             }
             break;
-          case getGameState().row2Sum === -1:
+          case (getGameState().row2Sum === -1):
             for (i = 0; i < 3; i++) {
               if (updatedGameboard[`row2`][i] === -3) {
                 updatedGameboard[`row2`][i] = 2;
               }
             }
             break;
-          case getGameState().row3Sum === -1:
+          case (getGameState().row3Sum === -1):
             for (i = 0; i < 3; i++) {
               if (updatedGameboard[`row3`][i] === -3) {
                 updatedGameboard[`row3`][i] = 2;
               }
             }
             break;
-          case getGameState().column1Sum === -1:
-            for (i = 0; i < 3; i++) {
+          case (getGameState().column1Sum === -1):
+            for (i = 1; i < 4; i++) {
               if (updatedGameboard[`row${i}`][0] === -3) {
                 updatedGameboard[`row${i}`][0] = 2;
               }
             }
             break;
-          case getGameState().column1Sum === -1:
+          case ((getGameState().column2Sum === -1)):
             for (i = 1; i < 4; i++) {
               if (updatedGameboard[`row${i}`][1] === -3) {
                 updatedGameboard[`row${i}`][1] = 2;
               }
             }
             break;
-          case ((getGameState().column2Sum === -1)):
+          case (getGameState().column3Sum === -1):
             for (i = 1; i < 4; i++) {
               if (updatedGameboard[`row${i}`][2] === -3) {
                 updatedGameboard[`row${i}`][2] = 2;
               }
             }
             break;
-          case getGameState().column3Sum === -1:
-            for (i = 1; i < 4; i++) {
-              if (updatedGameboard[`row${i}`][0] === -3) {
-                updatedGameboard[`row${i}`][i] = 2;
-              }
-            }
-            break;
-          case getGameState().diagonal1Sum === -1:
+          case (getGameState().diagonal1Sum === -1):
             if (cornerTL === -3) {
-              cornerTL = 2;
+              updatedGameboard["row1"][0] = 2;
             }
             else if (center === -3) {
-              center = 2;
+              updatedGameboard["row2"][1] = 2;
             }
             else if (cornerBR === -3) {
-              cornerBR === 2;
+              updatedGameboard["row3"][2] = 2;
             }
             break;
-          case getGameState().diagonal2Sum === -1:
+          case (getGameState().diagonal2Sum === -1):
             if (cornerTR === -3) {
-              cornerTL = 2;
+              updatedGameboard["row1"][2] = 2;
             }
             else if (center === -3) {
-              center = 2;
+              updatedGameboard["row2"][1] = 2;
             }
             else if (cornerBL === -3) {
-              cornerBR === 2;
+              updatedGameboard["row3"][0] = 2;
             }
             break;
           default :
             computerMoveEasiest();
         }
-        moveCount++
         evaluate();
        
       }
@@ -296,7 +282,7 @@ function play(mode) {
     }
       
 
-    function getGameState(mode) {
+    function getGameState() {
       let row1Sum =
         updatedGameboard["row1"][0] +
         updatedGameboard["row1"][1] +
@@ -352,27 +338,23 @@ function play(mode) {
       if (Object.values(getGameState()).includes(3)) {
         console.log(`${updatedGameboard["row1"]}\n${updatedGameboard["row2"]}\n${updatedGameboard["row3"]}`);
         console.log("Você ganhou!");
-        wins++
+        wins++;
         moveCount = -1;
         updatedGameboard = JSON.parse(JSON.stringify(gameboard));
-        return;
       }
       if (Object.values(getGameState()).includes(6)) {
         console.log(`${updatedGameboard["row1"]}\n${updatedGameboard["row2"]}\n${updatedGameboard["row3"]}`);
         console.log("Você perdeu");
-        losses++
+        losses++;
         moveCount = -1;
         updatedGameboard = JSON.parse(JSON.stringify(gameboard));
-        return;
       }
-      else if (getGameState().total === 13 || getGameState().total === 14) {
+      if (getGameState().total === 13 || getGameState().total === 14) {
         console.log(`${updatedGameboard["row1"]}\n${updatedGameboard["row2"]}\n${updatedGameboard["row3"]}`);
         console.log("Empate");
-        updatedGameboard = JSON.parse(JSON.stringify(gameboard));
-        draws++
+        draws++;
         moveCount = -1;
         updatedGameboard = JSON.parse(JSON.stringify(gameboard));
-        return;
       }
     }
 
@@ -407,9 +389,9 @@ function play(mode) {
   
   */
 const test2 = play("impossible");
-test2.randomP();
-test2.randomP();
-test2.randomP();
-test2.randomP();
+
+  test2.randomP();
+
+
 //todo function evaluate position
 //todo difficulty levels, actual tic tac toe optimal move algorithmss
