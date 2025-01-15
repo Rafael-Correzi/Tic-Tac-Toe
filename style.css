@@ -104,3 +104,7 @@ button {
   border: solid blue;
   border-radius: 10px;
 }
+
+.go-back, .clear {
+  display: none;
+}

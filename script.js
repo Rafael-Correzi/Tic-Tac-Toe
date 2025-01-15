@@ -29,6 +29,7 @@ function play(mode) {
   const clearBoard = function clean() {
     updatedGameboard = JSON.parse(JSON.stringify(gameboard));
     oldGameboard = JSON.parse(JSON.stringify(gameboard));
+    moveCount = 0;
   }
 
   function playerMove(row, column) {
@@ -449,7 +450,8 @@ const impossibleMode = play("impossible");
 
 function displayGame() {
   const squares = document.querySelectorAll(".quadrado");
-  const tryAgain = document.querySelectorAll(".again")
+  const tryAgain = document.querySelectorAll(".again");
+  const selectP = document.querySelector("#select-p");
   const easiest = document.querySelector(".easiest");
   const impossible = document.querySelector(".impossible");
   const goBack = document.querySelector(".go-back");
@@ -462,17 +464,23 @@ function displayGame() {
   container.style.display = "none";
 
   easiest.addEventListener("click", () => {
+    selectP.style.display = "none";
     easiest.style.display = "none";
     impossible.style.display = "none";
     mode = "easiest";
     container.style.display = "";
+    goBack.style.display = "inline-block";
+    clear.style.display = "inline-block";
   })
 
   impossible.addEventListener("click", () => {
+    selectP.style.display = "none";
     easiest.style.display = "none";
     impossible.style.display = "none";
     mode = "impossible";
     container.style.display = "";
+    goBack.style.display = "inline-block";
+    clear.style.display = "inline-block";
   })
 
   goBack.addEventListener("click", () => {
