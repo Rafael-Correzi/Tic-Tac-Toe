@@ -4,6 +4,7 @@ const gameboard = (() => {
 
 function play(mode) {
   let updatedGameboard = JSON.parse(JSON.stringify(gameboard));
+  let oldGameboard = JSON.parse(JSON.stringify(updatedGameboard));
   let moveCount = 0;
   let totalMoveCount = 0;
   let wins = 0;
@@ -22,10 +23,10 @@ function play(mode) {
   }
 
   const board = function() {
-    return updatedGameboard;
+    return oldGameboard;
   }
 
-  const clearBoard = function() {
+  const clearBoard = function clean() {
     updatedGameboard = JSON.parse(JSON.stringify(gameboard));
   }
 
@@ -52,22 +53,19 @@ function play(mode) {
         return;
       }
       if (moveCount === 0) {
-        go().moveOne();
         moveCount++;
         totalMoveCount++;
-        return totalMoveCount;
+        return go().moveOne();
       }
       if (moveCount === 1) {
-        go().moveTwo();
         moveCount++;
         totalMoveCount++;
-        return totalMoveCount;
+        return go().moveTwo();
       }
       if (moveCount >= 2) {
-        go().moveAfter();
         moveCount++;
         totalMoveCount++;
-        return totalMoveCount;
+        return go().moveAfter();
       }
     }
   }
@@ -374,13 +372,19 @@ function play(mode) {
 
   function evaluate() {
     console.log(`${updatedGameboard["row1"]}\n${updatedGameboard["row2"]}\n${updatedGameboard["row3"]}`);
+    oldGameboard = JSON.parse(JSON.stringify(updatedGameboard));
     if (Object.values(getGameState()).includes(3)) {
       console.log(`${updatedGameboard["row1"]}\n${updatedGameboard["row2"]}\n${updatedGameboard["row3"]}`);
       console.log("Você ganhou!");
       wins++;
       moveCount = -1;
       reset()
+      oldGameboard = JSON.parse(JSON.stringify(updatedGameboard));
       updatedGameboard = JSON.parse(JSON.stringify(gameboard));
+      display.squares.forEach((e) => {
+        e.style.pointerEvents = "none";
+      })
+      display.message1.style.display = "block";
     }
     if (Object.values(getGameState()).includes(6)) {
       console.log(`${updatedGameboard["row1"]}\n${updatedGameboard["row2"]}\n${updatedGameboard["row3"]}`);
@@ -388,7 +392,12 @@ function play(mode) {
       losses++;
       moveCount = -1;
       reset();
+      oldGameboard = JSON.parse(JSON.stringify(updatedGameboard));
       updatedGameboard = JSON.parse(JSON.stringify(gameboard));
+      display.squares.forEach((e) => {
+        e.style.pointerEvents = "none";
+      })
+      display.message2.style.display = "block";
     }
     if (getGameState().total === 13 || getGameState().total === 14) {
       console.log(`${updatedGameboard["row1"]}\n${updatedGameboard["row2"]}\n${updatedGameboard["row3"]}`);
@@ -396,12 +405,22 @@ function play(mode) {
       draws++;
       moveCount = -1;
       reset();
+      oldGameboard = JSON.parse(JSON.stringify(updatedGameboard));
       updatedGameboard = JSON.parse(JSON.stringify(gameboard));
+      display.squares.forEach((e) => {
+        e.style.pointerEvents = "none";
+      })
+      display.message3.style.display = "block";
     }
+    return oldGameboard;
+  }
+
+  function updatedO() {
+
   }
 
 
-  return { playerMove, getGameState, computerMoveEasiest, randomP, evaluate, updatedGameboard, clearBoard, go, moves, board};
+  return { playerMove, getGameState, computerMoveEasiest, randomP, evaluate, updatedGameboard, oldGameboard, clearBoard, go, moves, board};
 }
 
 /* row1[0] row1[1] row1[2]
@@ -434,12 +453,15 @@ https://en.wikipedia.org/wiki/Tic-tac-toe#Strategy
 const easiestMode = play("easiest");
 const impossibleMode = play("impossible");
 
-const display = (() => {
+function displayGame() {
   const squares = document.querySelectorAll(".quadrado");
   const easiest = document.querySelector(".easiest");
   const impossible = document.querySelector(".impossible");
   const goBack = document.querySelector(".go-back");
   const clear = document.querySelector(".clear");
+  const message1 = document.querySelector("#message1");
+  const message2 = document.querySelector("#message2");
+  const message3 = document.querySelector("#message3");
   const container = document.querySelector(".container");
   let mode;
   container.style.display = "none";
@@ -622,5 +644,7 @@ const display = (() => {
       }
     }
   })
+  return {squares, message1, message2, message3};
+};
 
-})();
+const display = displayGame();

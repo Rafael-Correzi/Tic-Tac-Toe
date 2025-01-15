@@ -80,10 +80,26 @@ button {
   background-image: url(Marcadores/X.png);
   background-repeat: no-repeat;
   background-size: 170px;
+  background-position: center;
 }
 
 .O {
   background-image: url(Marcadores/O.png);
   background-repeat: no-repeat;
   background-size: 190px;
+  background-position: center;
+}
+
+.message {
+  position: absolute;
+  width: 200px;
+  height: 150px;
+  margin: 0 auto;
+  left: 30px;
+  right: 0;
+  top: 200px;
+  background-color: #00ffff40;
+  z-index: 1;
+  border: solid blue;
+  border-radius: 10px;
 }
