@@ -16,6 +16,13 @@ button {
   display: block;
   margin: 0 auto;
   margin-bottom: 20px;
+  border: solid green;
+  width: 130px;
+  height: 50px;
+  background-color: lightgreen;
+  color: green;
+  font-weight: bold;
+  border-radius: 5px;
 }
 
 .container {
@@ -24,6 +31,7 @@ button {
   grid-template-rows: 220px 220px 220px;
   max-width: fit-content;
   margin: 0 auto;
+  margin-bottom: 50px;
 }
 
 .quadrado {

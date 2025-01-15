@@ -493,6 +493,9 @@ function displayGame() {
     container.style.display = "none";
     easiest.style.display = "";
     impossible.style.display = "";
+    selectP.style.display = "";
+    goBack.style.display = "";
+    clear.style.display = "";
   })
 
   clear.addEventListener("click", () => {
