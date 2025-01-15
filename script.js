@@ -28,6 +28,7 @@ function play(mode) {
 
   const clearBoard = function clean() {
     updatedGameboard = JSON.parse(JSON.stringify(gameboard));
+    oldGameboard = JSON.parse(JSON.stringify(gameboard));
   }
 
   function playerMove(row, column) {
@@ -53,19 +54,22 @@ function play(mode) {
         return;
       }
       if (moveCount === 0) {
+        go().moveOne();
         moveCount++;
         totalMoveCount++;
-        return go().moveOne();
+        return;
       }
       if (moveCount === 1) {
+        go().moveTwo();
         moveCount++;
         totalMoveCount++;
-        return go().moveTwo();
+        return;
       }
       if (moveCount >= 2) {
+        go().moveAfter();
         moveCount++;
         totalMoveCount++;
-        return go().moveAfter();
+        return;
       }
     }
   }
@@ -381,10 +385,7 @@ function play(mode) {
       reset()
       oldGameboard = JSON.parse(JSON.stringify(updatedGameboard));
       updatedGameboard = JSON.parse(JSON.stringify(gameboard));
-      display.squares.forEach((e) => {
-        e.style.pointerEvents = "none";
-      })
-      display.message1.style.display = "block";
+      display("win");
     }
     if (Object.values(getGameState()).includes(6)) {
       console.log(`${updatedGameboard["row1"]}\n${updatedGameboard["row2"]}\n${updatedGameboard["row3"]}`);
@@ -394,10 +395,7 @@ function play(mode) {
       reset();
       oldGameboard = JSON.parse(JSON.stringify(updatedGameboard));
       updatedGameboard = JSON.parse(JSON.stringify(gameboard));
-      display.squares.forEach((e) => {
-        e.style.pointerEvents = "none";
-      })
-      display.message2.style.display = "block";
+      display("loss");
     }
     if (getGameState().total === 13 || getGameState().total === 14) {
       console.log(`${updatedGameboard["row1"]}\n${updatedGameboard["row2"]}\n${updatedGameboard["row3"]}`);
@@ -407,12 +405,8 @@ function play(mode) {
       reset();
       oldGameboard = JSON.parse(JSON.stringify(updatedGameboard));
       updatedGameboard = JSON.parse(JSON.stringify(gameboard));
-      display.squares.forEach((e) => {
-        e.style.pointerEvents = "none";
-      })
-      display.message3.style.display = "block";
+      display("tie");
     }
-    return oldGameboard;
   }
 
   function updatedO() {
@@ -455,6 +449,7 @@ const impossibleMode = play("impossible");
 
 function displayGame() {
   const squares = document.querySelectorAll(".quadrado");
+  const tryAgain = document.querySelectorAll(".again")
   const easiest = document.querySelector(".easiest");
   const impossible = document.querySelector(".impossible");
   const goBack = document.querySelector(".go-back");
@@ -644,7 +639,40 @@ function displayGame() {
       }
     }
   })
-  return {squares, message1, message2, message3};
+
+  const result = function displayEndGame(result) {
+
+      squares.forEach((e) => {
+        e.style.pointerEvents = "none";
+      })
+      if (result === "win"){
+        message1.style.display = "block";
+      }
+      else if (result === "loss") {
+        message2.style.display = "block";
+      }
+      else  if (result === "tie") {
+        message3.style.display = "block";
+      }
+  }
+
+  tryAgain.forEach((e) => {
+    e.addEventListener("click", () => {
+      message1.style.display = "";
+      message2.style.display = "";
+      message3.style.display = "";
+      squares.forEach((e) => {
+        e.style.pointerEvents = "";
+        e.classList.remove("X");
+        e.classList.remove("O");
+      })
+      impossibleMode.clearBoard();
+      easiestMode.clearBoard();
+    })
+  })
+  
+
+  return result;
 };
 
 const display = displayGame();

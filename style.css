@@ -91,14 +91,15 @@ button {
 }
 
 .message {
+  display: none;
   position: absolute;
   width: 200px;
   height: 150px;
   margin: 0 auto;
-  left: 30px;
+  left: 40px;
   right: 0;
-  top: 200px;
-  background-color: #00ffff40;
+  top: 400px;
+  background-color: #00ffffee;
   z-index: 1;
   border: solid blue;
   border-radius: 10px;
